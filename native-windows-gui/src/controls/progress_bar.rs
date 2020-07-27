@@ -202,6 +202,26 @@ impl ProgressBar {
         wh::send_message(handle, PBM_SETMARQUEE, enable as WPARAM, update_interval as LPARAM);
     }
 
+    /// Updates the flags of the progress bar.
+    pub fn add_flags(&self, styles: ProgressBarFlags) {
+        let styles = styles.bits() as u32;
+
+        let handle = check_hwnd(&self.handle, NOT_BOUND, BAD_HANDLE);
+        let active_styles = wh::get_style(handle);
+        
+        wh::set_style(handle, active_styles | styles);
+    }
+
+    /// Removes flags from the progress bar.
+    pub fn remove_flags(&self, styles: ProgressBarFlags) {
+        let styles = styles.bits() as u32;
+
+        let handle = check_hwnd(&self.handle, NOT_BOUND, BAD_HANDLE);
+        let active_styles = wh::get_style(handle);
+
+        wh::set_style(handle, active_styles & !styles);
+    }
+
     /// Return true if the control currently has the keyboard focus
     pub fn focus(&self) -> bool {
         let handle = check_hwnd(&self.handle, NOT_BOUND, BAD_HANDLE);
